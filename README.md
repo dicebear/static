@@ -1,0 +1,2 @@
+# static
+DiceBear static files
