@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "DiceBear definition schema",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "license": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            }
+          }
+        },
+        "creator": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        },
+        "canvas": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "number",
+              "description": "Specifies the size of the canvas in pixels.",
+              "minimum": 1
+            }
+          },
+          "required": ["size"]
+        }
+      },
+      "required": ["canvas"]
+    },
+    "attributes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "value"]
+      }
+    },
+    "body": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array",
+      "description": "Specifies the components of the avatar. The PRNG randomly selects a component from each component group.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The alpha-numeric name of the component group."
+          },
+          "probability": {
+            "type": "number",
+            "description": "The probability of this component group to be displayed in the avatar. If not set, the component group is always displayed.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "rotation": {
+            "type": "array",
+            "description": "The random rotation of the component in degrees. If not set, the component is always displayed without rotation.",
+            "items": {
+              "type": "number",
+              "minimum": -360,
+              "maximum": 360
+            }
+          },
+          "offset": {
+            "type": "object",
+            "description": "The random offset of the component in the avatar. If not set, the component is always displayed without offset.",
+            "properties": {
+              "x": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "y": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "values": {
+            "type": "array",
+            "description": "Specifies the component options for this component group.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The alpha-numeric name of the component option."
+                },
+                "default": {
+                  "type": "boolean"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": ["name", "content"]
+            }
+          }
+        },
+        "required": ["name", "values"]
+      }
+    },
+    "colors": {
+      "type": "array",
+      "description": "Specifies color options for the avatar. The PRNG randomly selects a color from each color option.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The alpha-numeric name of the color option."
+          },
+          "values": {
+            "type": "array",
+            "description": "An array of default 6-digit hexadecimal color values for this color option.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notEqualTo": {
+            "type": "string",
+            "description": "If set, the color randomly selected by the PRNG should be different from this color option."
+          },
+          "contrastTo": {
+            "type": "string",
+            "description": "If set, a color is selected from the values that have the highest contrast to this color option. If the value is not set, the color is selected randomly by the PRNG."
+          }
+        },
+        "required": ["name", "values"]
+      }
+    }
+  },
+  "required": ["meta", "body"]
+}
