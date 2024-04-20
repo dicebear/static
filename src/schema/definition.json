@@ -42,20 +42,8 @@
               "type": "string"
             }
           }
-        },
-        "canvas": {
-          "type": "object",
-          "properties": {
-            "size": {
-              "type": "number",
-              "description": "Specifies the size of the canvas in pixels.",
-              "minimum": 1
-            }
-          },
-          "required": ["size"]
         }
-      },
-      "required": ["canvas"]
+      }
     },
     "attributes": {
       "type": "array",
@@ -73,7 +61,23 @@
       }
     },
     "body": {
-      "type": "string"
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "width": {
+          "type": "number",
+          "description": "Specifies the width of the canvas in pixels.",
+          "minimum": 1
+        },
+        "height": {
+          "type": "number",
+          "description": "Specifies the height of the canvas in pixels.",
+          "minimum": 1
+        }
+      },
+      "required": ["content", "width", "height"]
     },
     "components": {
       "type": "array",
@@ -84,6 +88,14 @@
           "name": {
             "type": "string",
             "description": "The alpha-numeric name of the component group."
+          },
+          "width": {
+            "type": "number",
+            "minimum": 1
+          },
+          "height": {
+            "type": "number",
+            "minimum": 1
           },
           "probability": {
             "type": "number",
@@ -139,7 +151,7 @@
             }
           }
         },
-        "required": ["name", "values"]
+        "required": ["name", "width", "height", "values"]
       }
     },
     "colors": {
@@ -172,5 +184,5 @@
       }
     }
   },
-  "required": ["meta", "body"]
+  "required": ["body"]
 }
