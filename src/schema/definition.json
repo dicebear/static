@@ -172,8 +172,11 @@
             }
           },
           "notEqualTo": {
-            "type": "string",
-            "description": "If set, the color randomly selected by the PRNG should be different from this color option."
+            "type": "array",
+            "description": "If set, the color randomly selected by the PRNG should be different from this color options.",
+            "items": {
+              "type": "string"
+            }
           },
           "contrastTo": {
             "type": "string",
