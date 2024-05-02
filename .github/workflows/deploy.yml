@@ -1,4 +1,4 @@
-name: Deploy Editor
+name: Deploy to Bunny.net
 
 on:
   push:
