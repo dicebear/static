@@ -130,9 +130,9 @@
               }
             }
           },
-          "values": {
+          "variants": {
             "type": "array",
-            "description": "Specifies the component options for this component group.",
+            "description": "Specifies the component variants for this component group.",
             "items": {
               "type": "object",
               "properties": {
