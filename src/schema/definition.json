@@ -151,7 +151,7 @@
             }
           }
         },
-        "required": ["name", "width", "height", "values"]
+        "required": ["name", "width", "height", "variants"]
       }
     },
     "colors": {
