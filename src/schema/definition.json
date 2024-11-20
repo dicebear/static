@@ -166,9 +166,10 @@
           },
           "values": {
             "type": "array",
-            "description": "An array of default 6-digit hexadecimal color values for this color option.",
+            "description": "An array of default hexadecimal color values for this color option.",
             "items": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
             }
           },
           "notEqualTo": {
