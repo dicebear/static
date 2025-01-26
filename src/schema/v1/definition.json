@@ -1,6 +1,6 @@
 {
-  "$id": "https://static.dicebear.com/schema/definition.json#",
-  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://static.dicebear.com/schema/v1/definition.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "DiceBear definition schema",
   "type": "object",
   "properties": {
