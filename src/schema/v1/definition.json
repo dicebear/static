@@ -1,7 +1,255 @@
 {
   "$id": "https://static.dicebear.com/schema/v1/definition.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "DiceBear definition schema",
+  "$defs": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9]+$"
+    },
+    "element": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "#text",
+            "circle",
+            "clipPath",
+            "defs",
+            "desc",
+            "ellipse",
+            "feBlend",
+            "feColorMatrix",
+            "feComponentTransfer",
+            "feComposite",
+            "feConvolveMatrix",
+            "feDiffuseLighting",
+            "feDisplacementMap",
+            "feDistantLight",
+            "feDropShadow",
+            "feFlood",
+            "feFuncA",
+            "feFuncB",
+            "feFuncG",
+            "feFuncR",
+            "feGaussianBlur",
+            "feImage",
+            "feMerge",
+            "feMergeNode",
+            "feMorphology",
+            "feOffset",
+            "fePointLight",
+            "feSpecularLighting",
+            "feSpotLight",
+            "feTile",
+            "feTurbulence",
+            "filter",
+            "g",
+            "image",
+            "line",
+            "linearGradient",
+            "marker",
+            "mask",
+            "metadata",
+            "mpath",
+            "path",
+            "pattern",
+            "polygon",
+            "polyline",
+            "radialGradient",
+            "rect",
+            "stop",
+            "style",
+            "svg",
+            "switch",
+            "symbol",
+            "text",
+            "textPath",
+            "title",
+            "tspan",
+            "use",
+            "view"
+          ]
+        },
+        "value": {
+          "type": "string"
+        },
+        "attributes": {
+          "$ref": "#/$defs/attributes"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#"
+          }
+        }
+      },
+      "required": ["name"]
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "alignment-baseline": { "type":  "string" },
+        "amplitude": { "type":  "string" },
+        "azimuth": { "type":  "string" },
+        "baseFrequency": { "type":  "string" },
+        "baseline-shift": { "type":  "string" },
+        "bias": { "type":  "string" },
+        "class": { "type":  "string" },
+        "clipPathUnits": { "type":  "string" },
+        "clip-path": { "type":  "string" },
+        "clip-rule": { "type":  "string" },
+        "color": { "type":  "string" },
+        "color-interpolation": { "type":  "string" },
+        "color-interpolation-filters": { "type":  "string" },
+        "crossorigin": { "type":  "string" },
+        "cx": { "type":  "string" },
+        "cy": { "type":  "string" },
+        "d": { "type":  "string" },
+        "decoding": { "type":  "string" },
+        "diffuseConstant": { "type":  "string" },
+        "direction": { "type":  "string" },
+        "display": { "type":  "string" },
+        "divisor": { "type":  "string" },
+        "dx": { "type":  "string" },
+        "dy": { "type":  "string" },
+        "edgeMode": { "type":  "string" },
+        "elevation": { "type":  "string" },
+        "exponent": { "type":  "string" },
+        "fill": { "type":  "string" },
+        "fill-opacity": { "type":  "string" },
+        "fill-rule": { "type":  "string" },
+        "filter": { "type":  "string" },
+        "filterUnits": { "type":  "string" },
+        "flood-color": { "type":  "string" },
+        "flood-opacity": { "type":  "string" },
+        "font-family": { "type":  "string" },
+        "font-size": { "type":  "string" },
+        "font-size-adjust": { "type":  "string" },
+        "font-style": { "type":  "string" },
+        "font-variant": { "type":  "string" },
+        "font-weight": { "type":  "string" },
+        "fx": { "type":  "string" },
+        "fy": { "type":  "string" },
+        "gradientTransform": { "type":  "string" },
+        "gradientUnits": { "type":  "string" },
+        "height": { "type":  "string" },
+        "href": {
+          "anyOf": [
+            {
+              "type":  "string",
+              "pattern": "^#[a-zA-Z0-9]+$"
+            },
+            {
+              "type": "string",
+              "pattern": "^data:img/(png|gif|jpg|jpeg|webp|avif);base64,[a-zA-Z0-9+/=]+$"
+            }
+          ]
+        },
+        "id": { "type":  "string" },
+        "image-rendering": { "type":  "string" },
+        "in": { "type":  "string" },
+        "in2": { "type":  "string" },
+        "intercept": { "type":  "string" },
+        "k1": { "type":  "string" },
+        "k2": { "type":  "string" },
+        "k3": { "type":  "string" },
+        "k4": { "type":  "string" },
+        "kernelMatrix": { "type":  "string" },
+        "kernelUnitLength": { "type":  "string" },
+        "lang": { "type":  "string" },
+        "lengthAdjust": { "type":  "string" },
+        "letter-spacing": { "type":  "string" },
+        "lighting-color": { "type":  "string" },
+        "marker-end": { "type":  "string" },
+        "marker-mid": { "type":  "string" },
+        "marker-start": { "type":  "string" },
+        "markerHeight": { "type":  "string" },
+        "markerUnits": { "type":  "string" },
+        "markerWidth": { "type":  "string" },
+        "mask": { "type":  "string" },
+        "maskContentUnits": { "type":  "string" },
+        "maskUnits": { "type":  "string" },
+        "media": { "type":  "string" },
+        "method": { "type":  "string" },
+        "mode": { "type":  "string" },
+        "numOctaves": { "type":  "string" },
+        "offset": { "type":  "string" },
+        "opacity": { "type":  "string" },
+        "operator": { "type":  "string" },
+        "order": { "type":  "string" },
+        "orient": { "type":  "string" },
+        "overflow": { "type":  "string" },
+        "paint-order": { "type":  "string" },
+        "path": { "type":  "string" },
+        "pathLength": { "type":  "string" },
+        "patternContentUnits": { "type":  "string" },
+        "patternTransform": { "type":  "string" },
+        "patternUnits": { "type":  "string" },
+        "points": { "type":  "string" },
+        "preserveAlpha": { "type":  "string" },
+        "preserveAspectRatio": { "type":  "string" },
+        "primitiveUnits": { "type":  "string" },
+        "r": { "type":  "string" },
+        "radius": { "type":  "string" },
+        "refX": { "type":  "string" },
+        "refY": { "type":  "string" },
+        "result": { "type":  "string" },
+        "rx": { "type":  "string" },
+        "ry": { "type":  "string" },
+        "scale": { "type":  "string" },
+        "seed": { "type":  "string" },
+        "shape-rendering": { "type":  "string" },
+        "slope": { "type":  "string" },
+        "specularConstant": { "type":  "string" },
+        "specularExponent": { "type":  "string" },
+        "spreadMethod": { "type":  "string" },
+        "startOffset": { "type":  "string" },
+        "stdDeviation": { "type":  "string" },
+        "stitchTiles": { "type":  "string" },
+        "stop-color": { "type":  "string" },
+        "stop-opacity": { "type":  "string" },
+        "stroke": { "type":  "string" },
+        "stroke-dasharray": { "type":  "string" },
+        "stroke-dashoffset": { "type":  "string" },
+        "stroke-linecap": { "type":  "string" },
+        "stroke-linejoin": { "type":  "string" },
+        "stroke-miterlimit": { "type":  "string" },
+        "stroke-opacity": { "type":  "string" },
+        "stroke-width": { "type":  "string" },
+        "style": { "type":  "string" },
+        "surfaceScale": { "type":  "string" },
+        "systemLanguage": { "type":  "string" },
+        "tabindex": { "type":  "string" },
+        "tableValues": { "type":  "string" },
+        "targetX": { "type":  "string" },
+        "targetY": { "type":  "string" },
+        "text-anchor": { "type":  "string" },
+        "text-decoration": { "type":  "string" },
+        "text-rendering": { "type":  "string" },
+        "textLength": { "type":  "string" },
+        "transform": { "type":  "string" },
+        "transform-origin": { "type":  "string" },
+        "type": { "type":  "string" },
+        "values": { "type":  "string" },
+        "viewBox": { "type":  "string" },
+        "visibility": { "type":  "string" },
+        "width": { "type":  "string" },
+        "word-spacing": { "type":  "string" },
+        "writing-mode": { "type":  "string" },
+        "x": { "type":  "string" },
+        "x1": { "type":  "string" },
+        "x2": { "type":  "string" },
+        "xChannelSelector": { "type":  "string" },
+        "y": { "type":  "string" },
+        "y1": { "type":  "string" },
+        "y2": { "type":  "string" },
+        "yChannelSelector": { "type":  "string" },
+        "z": { "type":  "string" }
+      },
+      "additionalProperties": false
+    }
+  },
   "type": "object",
   "properties": {
     "meta": {
@@ -46,25 +294,13 @@
       }
     },
     "attributes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "value"]
-      }
+      "$ref": "#/$defs/attributes"
     },
     "body": {
       "type": "object",
       "properties": {
-        "content": {
-          "type": "string"
+        "element": {
+          "$ref": "#/$defs/element"
         },
         "width": {
           "type": "number",
@@ -77,17 +313,17 @@
           "minimum": 1
         }
       },
-      "required": ["content", "width", "height"]
+      "required": ["element", "width", "height"]
     },
     "components": {
       "type": "array",
-      "description": "Specifies the components of the avatar. The PRNG randomly selects a component from each component group.",
+      "description": "Specifies the components of the avatar. The PRNG randomly selects a component variant from each component.",
       "items": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "description": "The alpha-numeric name of the component group."
+            "$ref": "#/$defs/name",
+            "description": "The alpha-numeric name of the component."
           },
           "width": {
             "type": "number",
@@ -99,7 +335,7 @@
           },
           "probability": {
             "type": "number",
-            "description": "The probability of this component group to be displayed in the avatar. If not set, the component group is always displayed.",
+            "description": "The probability of this component to be displayed in the avatar. If not set, the component is always displayed.",
             "minimum": 0,
             "maximum": 100
           },
@@ -132,19 +368,19 @@
           },
           "variants": {
             "type": "array",
-            "description": "Specifies the component variants for this component group.",
+            "description": "Specifies the component variants for this component.",
             "items": {
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string",
-                  "description": "The alpha-numeric name of the component option."
+                  "$ref": "#/$defs/name",
+                  "description": "The alpha-numeric name of the component variant."
                 },
                 "default": {
                   "type": "boolean"
                 },
-                "content": {
-                  "type": "string"
+                "element": {
+                  "$ref": "#/$defs/element"
                 }
               },
               "required": ["name", "content"]
@@ -156,17 +392,17 @@
     },
     "colors": {
       "type": "array",
-      "description": "Specifies color options for the avatar. The PRNG randomly selects a color from each color option.",
+      "description": "Specifies colors for the avatar. The PRNG randomly selects a color from each color.",
       "items": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "description": "The alpha-numeric name of the color option."
+            "$ref": "#/$defs/name",
+            "description": "The alpha-numeric name of the color."
           },
           "values": {
             "type": "array",
-            "description": "An array of default hexadecimal color values for this color option.",
+            "description": "An array of default hexadecimal color values for this color.",
             "items": {
               "type": "string",
               "pattern": "^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
@@ -174,14 +410,14 @@
           },
           "notEqualTo": {
             "type": "array",
-            "description": "If set, the color randomly selected by the PRNG should be different from this color options.",
+            "description": "If set, the color randomly selected by the PRNG should be different from this color.",
             "items": {
-              "type": "string"
+              "$ref": "#/$defs/name"
             }
           },
           "contrastTo": {
-            "type": "string",
-            "description": "If set, a color is selected from the values that have the highest contrast to this color option. If the value is not set, the color is selected randomly by the PRNG."
+            "$ref": "#/$defs/name",
+            "description": "If set, a color is selected from the values that have the highest contrast to this color. If the value is not set, the color is selected randomly by the PRNG."
           }
         },
         "required": ["name", "values"]
