@@ -6,7 +6,7 @@
   "$defs": {
     "flipDirection": {
       "type": "string",
-      "enum": ["horizontal", "vertical", "both"]
+      "enum": ["none", "horizontal", "vertical", "both"]
     },
     "rotation": {
       "type": "number",
@@ -92,13 +92,13 @@
     }
   },
   "patternProperties": {
-    "Probability$": {
+    "^[a-z][A-Za-z0-9]+Probability$": {
       "type": "number",
       "description": "Represents the probability that a component of the avatar will be displayed. The value can be either a float or an integer, but is interpreted as a percentage. For example, a value of 0 means the part will never be displayed, while a value of 100 means it will always be displayed.",
       "minimum": 0,
       "maximum": 100
     },
-    "Variant$": {
+    "^[a-z][A-Za-z0-9]+Variant$": {
       "description": "Specifies which variants of the avatar part can be selected by the PRNG. If specified as a string or as an array with only one value, the value is fixed. However, if specified as an array with multiple values, the PRNG will choose from the available options.",
       "oneOf": [
         {
@@ -112,7 +112,7 @@
         }
       ]
     },
-    "Color$": {
+    "^[a-z][A-Za-z0-9]+Color$": {
       "description": "Specifies which colors for the avatar component can be selected by the PRNG. If specified as a string or array with only one value, the value is fixed. However, if specified as an array with multiple values, the PRNG will choose from the available options. The color must be specified as a hex value.",
       "oneOf": [
         {
@@ -126,7 +126,7 @@
         }
       ]
     },
-    "(^r|R)otation": {
+    "^(r|[a-z][A-Za-z0-9]+R)otation": {
       "description": "This is the rotation angle for the avatar or its parts. This value can be an integer or a float. A value of 0 results in no rotation, while values between -360 and 360 define the degree of rotation in both directions. If specified as an array, the PRNG will select a value within the specified range, including the values themselves. If not preceded by an avatar part, the option applies to the entire avatar.",
       "oneOf": [
         {
@@ -142,7 +142,7 @@
         }
       ]
     },
-    "(^v|V)erticalOffset$": {
+    "^(v|[a-z][A-Za-z0-9]+V)erticalOffset$": {
       "description": "This is the vertical offset of the avatar or its parts. This value can be an integer or a float. A value of 0 results in no offset, while positive values move the part down as a percentage and negative values move it up as a percentage. If specified as an array, the PRNG will select a value within the specified range, including the values themselves. If no avatar part is specified, the option applies to the entire avatar.",
       "oneOf": [
         {
@@ -158,7 +158,7 @@
         }
       ]
     },
-    "(^h|H)orizontalOffset$": {
+    "^(h|[a-z][A-Za-z0-9]+H)orizontalOffset$": {
       "description": "This is the horizontal offset of the avatar or its parts. This value can be an integer or a float. A value of 0 results in no offset, while positive values move the part to the right as a percentage and negative values move it to the left as a percentage. If specified as an array, the PRNG will select a value within the specified range, including the values themselves. If no avatar part is specified, the option applies to the entire avatar.",
       "oneOf": [
         {
