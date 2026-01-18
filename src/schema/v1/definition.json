@@ -376,14 +376,11 @@
                   "$ref": "#/$defs/name",
                   "description": "The alpha-numeric name of the component variant."
                 },
-                "default": {
-                  "type": "boolean"
-                },
                 "element": {
                   "$ref": "#/$defs/element"
                 }
               },
-              "required": ["name", "content"]
+              "required": ["name", "element"]
             }
           }
         },
