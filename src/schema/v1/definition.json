@@ -299,8 +299,11 @@
     "body": {
       "type": "object",
       "properties": {
-        "element": {
-          "$ref": "#/$defs/element"
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/element"
+          }
         },
         "width": {
           "type": "number",
@@ -313,7 +316,7 @@
           "minimum": 1
         }
       },
-      "required": ["element", "width", "height"]
+      "required": ["content", "width", "height"]
     },
     "components": {
       "type": "array",
@@ -376,11 +379,14 @@
                   "$ref": "#/$defs/name",
                   "description": "The alpha-numeric name of the component variant."
                 },
-                "element": {
-                  "$ref": "#/$defs/element"
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/element"
+                  }
                 }
               },
-              "required": ["name", "element"]
+              "required": ["name", "content"]
             }
           }
         },
