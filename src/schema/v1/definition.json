@@ -80,7 +80,7 @@
         "children": {
           "type": "array",
           "items": {
-            "$ref": "#"
+            "$ref": "#/$defs/element"
           }
         }
       },
@@ -138,7 +138,7 @@
           "anyOf": [
             {
               "type":  "string",
-              "pattern": "^#[a-zA-Z0-9]+$"
+              "pattern": "^#[a-zA-Z0-9-]+$"
             },
             {
               "type": "string",
