@@ -91,7 +91,8 @@
             "$ref": "#/$defs/element"
           }
         }
-      }
+      },
+      "required": ["type"]
     },
     "colorAttribute": {
       "anyOf": [
