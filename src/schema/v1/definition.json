@@ -12,7 +12,6 @@
         "name": {
           "type": "string",
           "enum": [
-            "#text",
             "circle",
             "clipPath",
             "defs",
@@ -71,6 +70,15 @@
             "view"
           ]
         },
+        "type": {
+          "type": "string",
+          "enum": [
+            "element",
+            "text",
+            "component",
+            "variable"
+          ]
+        },
         "value": {
           "type": "string"
         },
@@ -86,6 +94,41 @@
       },
       "required": ["name"]
     },
+    "colorAttribute": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
+        },
+        {
+          "type": "string",
+          "pattern": "^rgba?\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^hsla?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^hsba?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "color"
+              ]
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "value"]
+        }
+      ]
+    },
     "attributes": {
       "type": "object",
       "properties": {
@@ -99,7 +142,9 @@
         "clipPathUnits": { "type":  "string" },
         "clip-path": { "type":  "string" },
         "clip-rule": { "type":  "string" },
-        "color": { "type":  "string" },
+        "color": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "color-interpolation": { "type":  "string" },
         "color-interpolation-filters": { "type":  "string" },
         "crossorigin": { "type":  "string" },
@@ -116,12 +161,16 @@
         "edgeMode": { "type":  "string" },
         "elevation": { "type":  "string" },
         "exponent": { "type":  "string" },
-        "fill": { "type":  "string" },
+        "fill": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "fill-opacity": { "type":  "string" },
         "fill-rule": { "type":  "string" },
         "filter": { "type":  "string" },
         "filterUnits": { "type":  "string" },
-        "flood-color": { "type":  "string" },
+        "flood-color": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "flood-opacity": { "type":  "string" },
         "font-family": { "type":  "string" },
         "font-size": { "type":  "string" },
@@ -142,7 +191,7 @@
             },
             {
               "type": "string",
-              "pattern": "^data:img/(png|gif|jpg|jpeg|webp|avif);base64,[a-zA-Z0-9+/=]+$"
+              "pattern": "^data:image/(png|gif|jpg|jpeg|webp|avif);base64,[a-zA-Z0-9+/=]+$"
             }
           ]
         },
@@ -160,7 +209,9 @@
         "lang": { "type":  "string" },
         "lengthAdjust": { "type":  "string" },
         "letter-spacing": { "type":  "string" },
-        "lighting-color": { "type":  "string" },
+        "lighting-color": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "marker-end": { "type":  "string" },
         "marker-mid": { "type":  "string" },
         "marker-start": { "type":  "string" },
@@ -207,9 +258,13 @@
         "startOffset": { "type":  "string" },
         "stdDeviation": { "type":  "string" },
         "stitchTiles": { "type":  "string" },
-        "stop-color": { "type":  "string" },
+        "stop-color": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "stop-opacity": { "type":  "string" },
-        "stroke": { "type":  "string" },
+        "stroke": { 
+          "$ref": "#/$defs/colorAttribute"
+        },
         "stroke-dasharray": { "type":  "string" },
         "stroke-dashoffset": { "type":  "string" },
         "stroke-linecap": { "type":  "string" },
