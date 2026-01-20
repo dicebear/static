@@ -98,6 +98,10 @@
       "anyOf": [
         {
           "type": "string",
+          "pattern": "^[a-zA-Z]+$"
+        },
+        {
+          "type": "string",
           "pattern": "^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
         },
         {
