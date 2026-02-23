@@ -4,7 +4,67 @@
   "$defs": {
     "name": {
       "type": "string",
-      "pattern": "^[a-zA-Z0-9]+$"
+      "pattern": "^[a-z][a-zA-Z0-9]*$"
+    },
+    "colorString": {
+      "type": "string",
+      "anyOf": [
+        { "pattern": "^[a-zA-Z]+$" },
+        { "pattern": "^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$" },
+        {
+          "pattern": "^rgba?\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        },
+        {
+          "pattern": "^hsla?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        },
+        {
+          "pattern": "^hsba?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
+        }
+      ]
+    },
+    "colorAttribute": {
+      "anyOf": [
+        { "$ref": "#/$defs/colorString" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "color"
+            },
+            "value": {
+              "$ref": "#/$defs/name"
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "safeUrl": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "noExternalUrl": {
+      "type": "string",
+      "not": {
+        "anyOf": [
+          { "pattern": "[uU][rR][lL]\\s*\\(\\s*[^#)]" },
+          { "pattern": "\\\\" }
+        ]
+      }
+    },
+    "noCssInjection": {
+      "type": "string",
+      "not": {
+        "anyOf": [
+          { "pattern": "@" },
+          { "pattern": "[eE][xX][pP][rR][eE][sS][sS][iI][oO][nN]\\s*\\(" },
+          { "pattern": "[bB][eE][hH][aA][vV][iI][oO][rR]\\s*:" },
+          { "pattern": "-[mM][oO][zZ]-[bB][iI][nN][dD][iI][nN][gG]" },
+          { "pattern": "\\\\" }
+        ]
+      }
     },
     "element": {
       "type": "object",
@@ -72,12 +132,7 @@
         },
         "type": {
           "type": "string",
-          "enum": [
-            "element",
-            "text",
-            "component",
-            "variable"
-          ]
+          "enum": ["element", "text", "component", "variable"]
         },
         "value": {
           "type": "string"
@@ -92,105 +147,112 @@
           }
         }
       },
-      "required": ["type"]
-    },
-    "colorAttribute": {
-      "anyOf": [
+      "required": ["type"],
+      "additionalProperties": false,
+      "allOf": [
         {
-          "type": "string",
-          "pattern": "^[a-zA-Z]+$"
-        },
-        {
-          "type": "string",
-          "pattern": "^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
-        },
-        {
-          "type": "string",
-          "pattern": "^rgba?\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
-        },
-        {
-          "type": "string",
-          "pattern": "^hsla?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
-        },
-        {
-          "type": "string",
-          "pattern": "^hsba?\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*(,\\s*[0-1](\\.\\d+)?\\s*)?\\)$"
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": [
-                "color"
-              ]
-            },
-            "value": {
-              "type": "string"
-            }
+          "if": {
+            "properties": { "type": { "enum": ["component", "variable"] } },
+            "required": ["type"]
           },
-          "required": ["type", "value"]
+          "then": {
+            "required": ["value"],
+            "properties": { "value": { "$ref": "#/$defs/name" } },
+            "not": { "required": ["children"] }
+          }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "element" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["name"],
+            "if": {
+              "properties": { "name": { "const": "style" } }
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "allOf": [
+                    { "$ref": "#/$defs/noExternalUrl" },
+                    { "$ref": "#/$defs/noCssInjection" }
+                  ]
+                }
+              }
+            },
+            "else": {
+              "not": { "required": ["value"] }
+            }
+          }
         }
       ]
     },
     "attributes": {
       "type": "object",
       "properties": {
-        "alignment-baseline": { "type":  "string" },
-        "amplitude": { "type":  "string" },
-        "azimuth": { "type":  "string" },
-        "baseFrequency": { "type":  "string" },
-        "baseline-shift": { "type":  "string" },
-        "bias": { "type":  "string" },
-        "class": { "type":  "string" },
-        "clipPathUnits": { "type":  "string" },
-        "clip-path": { "type":  "string" },
-        "clip-rule": { "type":  "string" },
-        "color": { 
+        "alignment-baseline": { "type": "string" },
+        "amplitude": { "type": "string" },
+        "azimuth": { "type": "string" },
+        "baseFrequency": { "type": "string" },
+        "baseline-shift": { "type": "string" },
+        "bias": { "type": "string" },
+        "class": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_ -]+$"
+        },
+        "clipPathUnits": { "type": "string" },
+        "clip-path": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "clip-rule": { "type": "string" },
+        "color": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "color-interpolation": { "type":  "string" },
-        "color-interpolation-filters": { "type":  "string" },
-        "crossorigin": { "type":  "string" },
-        "cx": { "type":  "string" },
-        "cy": { "type":  "string" },
-        "d": { "type":  "string" },
-        "decoding": { "type":  "string" },
-        "diffuseConstant": { "type":  "string" },
-        "direction": { "type":  "string" },
-        "display": { "type":  "string" },
-        "divisor": { "type":  "string" },
-        "dx": { "type":  "string" },
-        "dy": { "type":  "string" },
-        "edgeMode": { "type":  "string" },
-        "elevation": { "type":  "string" },
-        "exponent": { "type":  "string" },
-        "fill": { 
+        "color-interpolation": { "type": "string" },
+        "color-interpolation-filters": { "type": "string" },
+        "crossorigin": { "type": "string" },
+        "cx": { "type": "string" },
+        "cy": { "type": "string" },
+        "d": { "type": "string" },
+        "decoding": { "type": "string" },
+        "diffuseConstant": { "type": "string" },
+        "direction": { "type": "string" },
+        "display": { "type": "string" },
+        "divisor": { "type": "string" },
+        "dx": { "type": "string" },
+        "dy": { "type": "string" },
+        "edgeMode": { "type": "string" },
+        "elevation": { "type": "string" },
+        "exponent": { "type": "string" },
+        "fill": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "fill-opacity": { "type":  "string" },
-        "fill-rule": { "type":  "string" },
-        "filter": { "type":  "string" },
-        "filterUnits": { "type":  "string" },
-        "flood-color": { 
+        "fill-opacity": { "type": "string" },
+        "fill-rule": { "type": "string" },
+        "filter": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "filterUnits": { "type": "string" },
+        "flood-color": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "flood-opacity": { "type":  "string" },
-        "font-family": { "type":  "string" },
-        "font-size": { "type":  "string" },
-        "font-size-adjust": { "type":  "string" },
-        "font-style": { "type":  "string" },
-        "font-variant": { "type":  "string" },
-        "font-weight": { "type":  "string" },
-        "fx": { "type":  "string" },
-        "fy": { "type":  "string" },
-        "gradientTransform": { "type":  "string" },
-        "gradientUnits": { "type":  "string" },
-        "height": { "type":  "string" },
+        "flood-opacity": { "type": "string" },
+        "font-family": { "type": "string" },
+        "font-size": { "type": "string" },
+        "font-size-adjust": { "type": "string" },
+        "font-style": { "type": "string" },
+        "font-variant": { "type": "string" },
+        "font-weight": { "type": "string" },
+        "fx": { "type": "string" },
+        "fy": { "type": "string" },
+        "gradientTransform": { "type": "string" },
+        "gradientUnits": { "type": "string" },
+        "height": { "type": "string" },
         "href": {
           "anyOf": [
             {
-              "type":  "string",
+              "type": "string",
               "pattern": "^#[a-zA-Z0-9-]+$"
             },
             {
@@ -199,112 +261,128 @@
             }
           ]
         },
-        "id": { "type":  "string" },
-        "image-rendering": { "type":  "string" },
-        "in": { "type":  "string" },
-        "in2": { "type":  "string" },
-        "intercept": { "type":  "string" },
-        "k1": { "type":  "string" },
-        "k2": { "type":  "string" },
-        "k3": { "type":  "string" },
-        "k4": { "type":  "string" },
-        "kernelMatrix": { "type":  "string" },
-        "kernelUnitLength": { "type":  "string" },
-        "lang": { "type":  "string" },
-        "lengthAdjust": { "type":  "string" },
-        "letter-spacing": { "type":  "string" },
-        "lighting-color": { 
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_.-]*$"
+        },
+        "image-rendering": { "type": "string" },
+        "in": { "type": "string" },
+        "in2": { "type": "string" },
+        "intercept": { "type": "string" },
+        "k1": { "type": "string" },
+        "k2": { "type": "string" },
+        "k3": { "type": "string" },
+        "k4": { "type": "string" },
+        "kernelMatrix": { "type": "string" },
+        "kernelUnitLength": { "type": "string" },
+        "lang": { "type": "string" },
+        "lengthAdjust": { "type": "string" },
+        "letter-spacing": { "type": "string" },
+        "lighting-color": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "marker-end": { "type":  "string" },
-        "marker-mid": { "type":  "string" },
-        "marker-start": { "type":  "string" },
-        "markerHeight": { "type":  "string" },
-        "markerUnits": { "type":  "string" },
-        "markerWidth": { "type":  "string" },
-        "mask": { "type":  "string" },
-        "maskContentUnits": { "type":  "string" },
-        "maskUnits": { "type":  "string" },
-        "media": { "type":  "string" },
-        "method": { "type":  "string" },
-        "mode": { "type":  "string" },
-        "numOctaves": { "type":  "string" },
-        "offset": { "type":  "string" },
-        "opacity": { "type":  "string" },
-        "operator": { "type":  "string" },
-        "order": { "type":  "string" },
-        "orient": { "type":  "string" },
-        "overflow": { "type":  "string" },
-        "paint-order": { "type":  "string" },
-        "path": { "type":  "string" },
-        "pathLength": { "type":  "string" },
-        "patternContentUnits": { "type":  "string" },
-        "patternTransform": { "type":  "string" },
-        "patternUnits": { "type":  "string" },
-        "points": { "type":  "string" },
-        "preserveAlpha": { "type":  "string" },
-        "preserveAspectRatio": { "type":  "string" },
-        "primitiveUnits": { "type":  "string" },
-        "r": { "type":  "string" },
-        "radius": { "type":  "string" },
-        "refX": { "type":  "string" },
-        "refY": { "type":  "string" },
-        "result": { "type":  "string" },
-        "rx": { "type":  "string" },
-        "ry": { "type":  "string" },
-        "scale": { "type":  "string" },
-        "seed": { "type":  "string" },
-        "shape-rendering": { "type":  "string" },
-        "slope": { "type":  "string" },
-        "specularConstant": { "type":  "string" },
-        "specularExponent": { "type":  "string" },
-        "spreadMethod": { "type":  "string" },
-        "startOffset": { "type":  "string" },
-        "stdDeviation": { "type":  "string" },
-        "stitchTiles": { "type":  "string" },
-        "stop-color": { 
+        "marker-end": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "marker-mid": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "marker-start": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "markerHeight": { "type": "string" },
+        "markerUnits": { "type": "string" },
+        "markerWidth": { "type": "string" },
+        "mask": {
+          "$ref": "#/$defs/noExternalUrl"
+        },
+        "maskContentUnits": { "type": "string" },
+        "maskUnits": { "type": "string" },
+        "media": { "type": "string" },
+        "method": { "type": "string" },
+        "mode": { "type": "string" },
+        "numOctaves": { "type": "string" },
+        "offset": { "type": "string" },
+        "opacity": { "type": "string" },
+        "operator": { "type": "string" },
+        "order": { "type": "string" },
+        "orient": { "type": "string" },
+        "overflow": { "type": "string" },
+        "paint-order": { "type": "string" },
+        "path": { "type": "string" },
+        "pathLength": { "type": "string" },
+        "patternContentUnits": { "type": "string" },
+        "patternTransform": { "type": "string" },
+        "patternUnits": { "type": "string" },
+        "points": { "type": "string" },
+        "preserveAlpha": { "type": "string" },
+        "preserveAspectRatio": { "type": "string" },
+        "primitiveUnits": { "type": "string" },
+        "r": { "type": "string" },
+        "radius": { "type": "string" },
+        "refX": { "type": "string" },
+        "refY": { "type": "string" },
+        "result": { "type": "string" },
+        "rx": { "type": "string" },
+        "ry": { "type": "string" },
+        "scale": { "type": "string" },
+        "seed": { "type": "string" },
+        "shape-rendering": { "type": "string" },
+        "slope": { "type": "string" },
+        "specularConstant": { "type": "string" },
+        "specularExponent": { "type": "string" },
+        "spreadMethod": { "type": "string" },
+        "startOffset": { "type": "string" },
+        "stdDeviation": { "type": "string" },
+        "stitchTiles": { "type": "string" },
+        "stop-color": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "stop-opacity": { "type":  "string" },
-        "stroke": { 
+        "stop-opacity": { "type": "string" },
+        "stroke": {
           "$ref": "#/$defs/colorAttribute"
         },
-        "stroke-dasharray": { "type":  "string" },
-        "stroke-dashoffset": { "type":  "string" },
-        "stroke-linecap": { "type":  "string" },
-        "stroke-linejoin": { "type":  "string" },
-        "stroke-miterlimit": { "type":  "string" },
-        "stroke-opacity": { "type":  "string" },
-        "stroke-width": { "type":  "string" },
-        "style": { "type":  "string" },
-        "surfaceScale": { "type":  "string" },
-        "systemLanguage": { "type":  "string" },
-        "tabindex": { "type":  "string" },
-        "tableValues": { "type":  "string" },
-        "targetX": { "type":  "string" },
-        "targetY": { "type":  "string" },
-        "text-anchor": { "type":  "string" },
-        "text-decoration": { "type":  "string" },
-        "text-rendering": { "type":  "string" },
-        "textLength": { "type":  "string" },
-        "transform": { "type":  "string" },
-        "transform-origin": { "type":  "string" },
-        "type": { "type":  "string" },
-        "values": { "type":  "string" },
-        "viewBox": { "type":  "string" },
-        "visibility": { "type":  "string" },
-        "width": { "type":  "string" },
-        "word-spacing": { "type":  "string" },
-        "writing-mode": { "type":  "string" },
-        "x": { "type":  "string" },
-        "x1": { "type":  "string" },
-        "x2": { "type":  "string" },
-        "xChannelSelector": { "type":  "string" },
-        "y": { "type":  "string" },
-        "y1": { "type":  "string" },
-        "y2": { "type":  "string" },
-        "yChannelSelector": { "type":  "string" },
-        "z": { "type":  "string" }
+        "stroke-dasharray": { "type": "string" },
+        "stroke-dashoffset": { "type": "string" },
+        "stroke-linecap": { "type": "string" },
+        "stroke-linejoin": { "type": "string" },
+        "stroke-miterlimit": { "type": "string" },
+        "stroke-opacity": { "type": "string" },
+        "stroke-width": { "type": "string" },
+        "style": {
+          "allOf": [
+            { "$ref": "#/$defs/noExternalUrl" },
+            { "$ref": "#/$defs/noCssInjection" }
+          ]
+        },
+        "surfaceScale": { "type": "string" },
+        "systemLanguage": { "type": "string" },
+        "tabindex": { "type": "string" },
+        "tableValues": { "type": "string" },
+        "targetX": { "type": "string" },
+        "targetY": { "type": "string" },
+        "text-anchor": { "type": "string" },
+        "text-decoration": { "type": "string" },
+        "text-rendering": { "type": "string" },
+        "textLength": { "type": "string" },
+        "transform": { "type": "string" },
+        "transform-origin": { "type": "string" },
+        "type": { "type": "string" },
+        "values": { "type": "string" },
+        "viewBox": { "type": "string" },
+        "visibility": { "type": "string" },
+        "width": { "type": "string" },
+        "word-spacing": { "type": "string" },
+        "writing-mode": { "type": "string" },
+        "x": { "type": "string" },
+        "x1": { "type": "string" },
+        "x2": { "type": "string" },
+        "xChannelSelector": { "type": "string" },
+        "y": { "type": "string" },
+        "y1": { "type": "string" },
+        "y2": { "type": "string" },
+        "yChannelSelector": { "type": "string" },
+        "z": { "type": "string" }
       },
       "additionalProperties": false
     }
@@ -317,40 +395,30 @@
         "license": {
           "type": "object",
           "properties": {
-            "name": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            },
-            "text": {
-              "type": "string"
-            }
-          }
+            "name": { "type": "string" },
+            "url": { "$ref": "#/$defs/safeUrl" },
+            "text": { "type": "string" }
+          },
+          "additionalProperties": false
         },
         "creator": {
           "type": "object",
           "properties": {
-            "name": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          }
+            "name": { "type": "string" },
+            "url": { "$ref": "#/$defs/safeUrl" }
+          },
+          "additionalProperties": false
         },
         "source": {
           "type": "object",
           "properties": {
-            "name": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          }
+            "name": { "type": "string" },
+            "url": { "$ref": "#/$defs/safeUrl" }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "attributes": {
       "$ref": "#/$defs/attributes"
@@ -360,131 +428,113 @@
       "properties": {
         "content": {
           "type": "array",
-          "items": {
-            "$ref": "#/$defs/element"
-          }
+          "items": { "$ref": "#/$defs/element" }
         },
         "width": {
           "type": "number",
-          "description": "Specifies the width of the canvas in pixels.",
           "minimum": 1
         },
         "height": {
           "type": "number",
-          "description": "Specifies the height of the canvas in pixels.",
           "minimum": 1
         }
       },
-      "required": ["content", "width", "height"]
+      "required": ["content", "width", "height"],
+      "additionalProperties": false
     },
     "components": {
-      "type": "array",
-      "description": "Specifies the components of the avatar. The PRNG randomly selects a component variant from each component.",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "$ref": "#/$defs/name",
-            "description": "The alpha-numeric name of the component."
-          },
-          "width": {
-            "type": "number",
-            "minimum": 1
-          },
-          "height": {
-            "type": "number",
-            "minimum": 1
-          },
-          "probability": {
-            "type": "number",
-            "description": "The probability of this component to be displayed in the avatar. If not set, the component is always displayed.",
-            "minimum": 0,
-            "maximum": 100
-          },
-          "rotation": {
-            "type": "array",
-            "description": "The random rotation of the component in degrees. If not set, the component is always displayed without rotation.",
-            "items": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9]*$": {
+          "type": "object",
+          "properties": {
+            "width": {
               "type": "number",
-              "minimum": -360,
-              "maximum": 360
-            }
-          },
-          "offset": {
-            "type": "object",
-            "description": "The random offset of the component in the avatar. If not set, the component is always displayed without offset.",
-            "properties": {
-              "x": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                }
-              },
-              "y": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                }
+              "minimum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 1
+            },
+            "probability": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "rotation": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -360,
+                "maximum": 360
               }
-            }
-          },
-          "variants": {
-            "type": "array",
-            "description": "Specifies the component variants for this component.",
-            "items": {
+            },
+            "offset": {
               "type": "object",
               "properties": {
-                "name": {
-                  "$ref": "#/$defs/name",
-                  "description": "The alpha-numeric name of the component variant."
-                },
-                "content": {
+                "x": {
                   "type": "array",
-                  "items": {
-                    "$ref": "#/$defs/element"
-                  }
+                  "items": { "type": "number" }
+                },
+                "y": {
+                  "type": "array",
+                  "items": { "type": "number" }
                 }
               },
-              "required": ["name", "content"]
+              "additionalProperties": false
+            },
+            "variants": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-z][a-zA-Z0-9]*$": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": { "$ref": "#/$defs/element" }
+                    }
+                  },
+                  "required": ["content"],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
             }
-          }
-        },
-        "required": ["name", "width", "height", "variants"]
-      }
+          },
+          "required": ["width", "height", "variants"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     },
     "colors": {
-      "type": "array",
-      "description": "Specifies colors for the avatar. The PRNG randomly selects a color from each color.",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "$ref": "#/$defs/name",
-            "description": "The alpha-numeric name of the color."
-          },
-          "values": {
-            "type": "array",
-            "description": "An array of default hexadecimal color values for this color.",
-            "items": {
-              "type": "string",
-              "pattern": "^#?([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
-            }
-          },
-          "notEqualTo": {
-            "type": "array",
-            "description": "If set, the color randomly selected by the PRNG should be different from this color.",
-            "items": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9]*$": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$"
+              }
+            },
+            "notEqualTo": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/name" }
+            },
+            "contrastTo": {
               "$ref": "#/$defs/name"
             }
           },
-          "contrastTo": {
-            "$ref": "#/$defs/name",
-            "description": "If set, a color is selected from the values that have the highest contrast to this color. If the value is not set, the color is selected randomly by the PRNG."
-          }
-        },
-        "required": ["name", "values"]
-      }
+          "required": ["values"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "required": ["body"]
+  "required": ["body"],
+  "additionalProperties": false
 }
