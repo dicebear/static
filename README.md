@@ -10,8 +10,9 @@ DiceBear SVG logos and favicons in black, blue, and white variants.
 
 ### Schemas (`src/schema/`)
 
-> [!NOTE] The schemas are still in beta stage and will only be used in future
-> versions of DiceBear.
+> [!NOTE]  
+> The schemas are still in beta stage and will only be used in future versions
+> of DiceBear.
 
 - **`definition.json`** — Defines the structure of avatar definitions (SVG
   templates), including elements, components, colors, attributes, and metadata.
