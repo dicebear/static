@@ -7,8 +7,8 @@ const validate = createValidator(schema);
 
 describe("definition.json root", () => {
   describe("valid documents", () => {
-    it("accepts minimal document with body", () => {
-      const data = { body: { content: [], width: 100, height: 100 } };
+    it("accepts minimal document with canvas", () => {
+      const data = { canvas: { elements: [], width: 100, height: 100 } };
       assert.equal(validate(data), true);
     });
 
@@ -16,68 +16,84 @@ describe("definition.json root", () => {
       const data = {
         meta: {},
         attributes: {},
-        body: { content: [], width: 100, height: 100 },
+        canvas: { elements: [], width: 100, height: 100 },
         components: {},
         colors: {},
       };
       assert.equal(validate(data), true);
     });
 
+    it("accepts $schema field", () => {
+      const data = {
+        $schema: "https://static.dicebear.com/schema/v1/definition.json",
+        canvas: { elements: [], width: 100, height: 100 },
+      };
+      assert.equal(validate(data), true);
+    });
+
+    it("accepts $comment field", () => {
+      const data = {
+        $comment: "My avatar style",
+        canvas: { elements: [], width: 100, height: 100 },
+      };
+      assert.equal(validate(data), true);
+    });
+
     it("accepts decimal dimensions", () => {
-      const data = { body: { content: [], width: 1.5, height: 2.7 } };
+      const data = { canvas: { elements: [], width: 1.5, height: 2.7 } };
       assert.equal(validate(data), true);
     });
   });
 
   describe("invalid documents", () => {
-    it("rejects empty object (missing body)", () => {
+    it("rejects empty object (missing canvas)", () => {
       assert.equal(validate({}), false);
     });
 
-    it("rejects body without required fields", () => {
-      const data = { body: {} };
+    it("rejects canvas without required fields", () => {
+      const data = { canvas: {} };
       assert.equal(validate(data), false);
     });
 
     it("rejects width: 0", () => {
-      const data = { body: { content: [], width: 0, height: 100 } };
+      const data = { canvas: { elements: [], width: 0, height: 100 } };
       assert.equal(validate(data), false);
     });
 
     it("rejects height: 0", () => {
-      const data = { body: { content: [], width: 100, height: 0 } };
+      const data = { canvas: { elements: [], width: 100, height: 0 } };
       assert.equal(validate(data), false);
     });
 
     it("rejects negative width", () => {
-      const data = { body: { content: [], width: -5, height: 100 } };
+      const data = { canvas: { elements: [], width: -5, height: 100 } };
       assert.equal(validate(data), false);
     });
 
     it("rejects negative height", () => {
-      const data = { body: { content: [], width: 100, height: -5 } };
+      const data = { canvas: { elements: [], width: 100, height: -5 } };
       assert.equal(validate(data), false);
     });
 
-    it("rejects content as string", () => {
-      const data = { body: { content: "abc", width: 100, height: 100 } };
+    it("rejects elements as string", () => {
+      const data = { canvas: { elements: "abc", width: 100, height: 100 } };
       assert.equal(validate(data), false);
     });
 
     it("rejects width as string", () => {
-      const data = { body: { content: [], width: "100", height: 100 } };
+      const data = { canvas: { elements: [], width: "100", height: 100 } };
       assert.equal(validate(data), false);
     });
   });
 
   describe("boundary values", () => {
     it("accepts width: 1, height: 1 (minimum)", () => {
-      const data = { body: { content: [], width: 1, height: 1 } };
+      const data = { canvas: { elements: [], width: 1, height: 1 } };
       assert.equal(validate(data), true);
     });
 
     it("rejects width: 0.999 (below minimum)", () => {
-      const data = { body: { content: [], width: 0.999, height: 100 } };
+      const data = { canvas: { elements: [], width: 0.999, height: 100 } };
       assert.equal(validate(data), false);
     });
   });
@@ -85,15 +101,15 @@ describe("definition.json root", () => {
   describe("additionalProperties", () => {
     it("rejects unknown top-level property", () => {
       const data = {
-        body: { content: [], width: 100, height: 100 },
+        canvas: { elements: [], width: 100, height: 100 },
         malicious: "payload",
       };
       assert.equal(validate(data), false);
     });
 
-    it("rejects additional property in body", () => {
+    it("rejects additional property in canvas", () => {
       const data = {
-        body: { content: [], width: 100, height: 100, extra: "data" },
+        canvas: { elements: [], width: 100, height: 100, extra: "data" },
       };
       assert.equal(validate(data), false);
     });

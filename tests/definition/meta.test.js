@@ -5,18 +5,18 @@ import { loadSchema, createValidator } from "../helpers/validator.js";
 const schema = loadSchema("definition.json");
 const validate = createValidator(schema);
 
-function withBody(extra) {
-  return { body: { content: [], width: 100, height: 100 }, ...extra };
+function withCanvas(extra) {
+  return { canvas: { elements: [], width: 100, height: 100 }, ...extra };
 }
 
 describe("definition.json meta", () => {
   describe("valid meta", () => {
     it("accepts empty meta", () => {
-      assert.equal(validate(withBody({ meta: {} })), true);
+      assert.equal(validate(withCanvas({ meta: {} })), true);
     });
 
     it("accepts full meta with all sub-objects", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: {
           license: {
             name: "MIT",
@@ -31,7 +31,7 @@ describe("definition.json meta", () => {
     });
 
     it("accepts partial meta", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { name: "Jane" } },
       });
       assert.equal(validate(data), true);
@@ -40,42 +40,42 @@ describe("definition.json meta", () => {
 
   describe("invalid meta", () => {
     it("rejects name as number", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { name: 123 } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects meta as string", () => {
-      const data = withBody({ meta: "invalid" });
+      const data = withCanvas({ meta: "invalid" });
       assert.equal(validate(data), false);
     });
   });
 
   describe("additionalProperties", () => {
     it("rejects additional property in meta", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { extra: "data" },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects additional property in license", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { license: { name: "MIT", extra: "data" } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects additional property in creator", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { name: "John", extra: "data" } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects additional property in source", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { source: { name: "Proj", extra: "data" } },
       });
       assert.equal(validate(data), false);
@@ -84,35 +84,35 @@ describe("definition.json meta", () => {
 
   describe("URL security", () => {
     it("accepts https URL", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { url: "https://example.com" } },
       });
       assert.equal(validate(data), true);
     });
 
     it("accepts http URL", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { url: "http://example.com" } },
       });
       assert.equal(validate(data), true);
     });
 
     it("rejects javascript URI in creator url", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { url: "javascript:alert(1)" } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects javascript URI in license url", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { license: { url: "javascript:alert(1)" } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects data URI in source url", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: {
           source: { url: "data:text/html,<script>alert(1)</script>" },
         },
@@ -121,14 +121,14 @@ describe("definition.json meta", () => {
     });
 
     it("rejects file:// URI", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { url: "file:///etc/passwd" } },
       });
       assert.equal(validate(data), false);
     });
 
     it("rejects protocol-relative URL", () => {
-      const data = withBody({
+      const data = withCanvas({
         meta: { creator: { url: "//evil.com/steal" } },
       });
       assert.equal(validate(data), false);

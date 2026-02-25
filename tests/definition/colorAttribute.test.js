@@ -70,6 +70,10 @@ describe("definition.json $defs/colorAttribute", () => {
       assert.equal(validate("hsl(120, 50%, 50%)"), true);
     });
 
+    it('accepts "hsla(120, 50%, 50%, 0.5)"', () => {
+      assert.equal(validate("hsla(120, 50%, 50%, 0.5)"), true);
+    });
+
     it("rejects missing % signs", () => {
       assert.equal(validate("hsl(120, 50, 50)"), false);
     });
@@ -78,6 +82,10 @@ describe("definition.json $defs/colorAttribute", () => {
   describe("hsb/hsba", () => {
     it('accepts "hsb(120, 50%, 50%)"', () => {
       assert.equal(validate("hsb(120, 50%, 50%)"), true);
+    });
+
+    it('accepts "hsba(120, 50%, 50%, 0.5)"', () => {
+      assert.equal(validate("hsba(120, 50%, 50%, 0.5)"), true);
     });
   });
 
@@ -132,6 +140,10 @@ describe("definition.json $defs/colorAttribute", () => {
 
     it("rejects null", () => {
       assert.equal(validate(null), false);
+    });
+
+    it("rejects url(#id) (paint server reference not allowed in colorAttribute)", () => {
+      assert.equal(validate("url(#myGradient)"), false);
     });
   });
 });

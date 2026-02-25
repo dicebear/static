@@ -21,7 +21,7 @@ describe("options.json additionalProperties", () => {
       headProbability: 75,
       eyesVariant: "open",
       skinColor: "#ff0000",
-      rotation: 45,
+      rotate: 45,
     };
     assert.equal(validate(data), true);
   });

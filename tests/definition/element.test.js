@@ -24,9 +24,14 @@ describe("definition.json $defs/element", () => {
       assert.equal(validate({ type: "component", value: "eyes" }), true);
     });
 
-    it("accepts variable with value", () => {
-      assert.equal(validate({ type: "variable", value: "skinColor" }), true);
-    });
+    for (const name of ["initial", "initials", "fontFamily", "fontWeight"]) {
+      it(`accepts text with variable value object (${name})`, () => {
+        assert.equal(
+          validate({ type: "text", value: { type: "variable", value: name } }),
+          true,
+        );
+      });
+    }
 
     it("accepts element with name, attributes and children", () => {
       assert.equal(
@@ -75,7 +80,7 @@ describe("definition.json $defs/element", () => {
       assert.equal(validate({ type: "component" }), false);
     });
 
-    it("rejects variable without required value", () => {
+    it('rejects "variable" as element type', () => {
       assert.equal(validate({ type: "variable" }), false);
     });
 
@@ -144,8 +149,32 @@ describe("definition.json $defs/element", () => {
       );
     });
 
-    it("rejects variable type with uppercase start", () => {
-      assert.equal(validate({ type: "variable", value: "SkinColor" }), false);
+    it("rejects variable value object with unknown variable name", () => {
+      assert.equal(
+        validate({ type: "text", value: { type: "variable", value: "skinColor" } }),
+        false,
+      );
+    });
+
+    it("rejects variable value object without type", () => {
+      assert.equal(
+        validate({ type: "text", value: { value: "skinColor" } }),
+        false,
+      );
+    });
+
+    it("rejects variable value object without value", () => {
+      assert.equal(
+        validate({ type: "text", value: { type: "variable" } }),
+        false,
+      );
+    });
+
+    it("rejects variable value object with additional properties", () => {
+      assert.equal(
+        validate({ type: "text", value: { type: "variable", value: "skinColor", extra: "data" } }),
+        false,
+      );
     });
 
     it("rejects value on non-style element", () => {
@@ -178,21 +207,16 @@ describe("definition.json $defs/element", () => {
       );
     });
 
-    for (const { type, props } of [
-      { type: "component", props: { value: "eyes" } },
-      { type: "variable", props: { value: "skinColor" } },
-    ]) {
-      it(`rejects ${type} type with children`, () => {
-        assert.equal(
-          validate({
-            type,
-            ...props,
-            children: [{ type: "element", name: "rect" }],
-          }),
-          false,
-        );
-      });
-    }
+    it("rejects component type with children", () => {
+      assert.equal(
+        validate({
+          type: "component",
+          value: "eyes",
+          children: [{ type: "element", name: "rect" }],
+        }),
+        false,
+      );
+    });
   });
 
   describe("style element value security", () => {

@@ -35,6 +35,30 @@ describe("definition.json $defs/attributes", () => {
       );
     });
 
+    it("accepts fill with local url(#id)", () => {
+      assert.equal(validate({ fill: "url(#myGradient)" }), true);
+    });
+
+    it("accepts stroke with local url(#id)", () => {
+      assert.equal(validate({ stroke: "url(#myPattern)" }), true);
+    });
+
+    it("rejects fill with external url()", () => {
+      assert.equal(validate({ fill: "url(https://evil.com/grad.svg#g)" }), false);
+    });
+
+    it("rejects fill with uppercase URL(#id)", () => {
+      assert.equal(validate({ fill: "URL(#myGradient)" }), false);
+    });
+
+    it("rejects fill with empty id url(#)", () => {
+      assert.equal(validate({ fill: "url(#)" }), false);
+    });
+
+    it("rejects stroke with external url()", () => {
+      assert.equal(validate({ stroke: "url(https://evil.com/grad.svg#g)" }), false);
+    });
+
     it("accepts multiple attributes", () => {
       assert.equal(validate({ d: "M0 0", fill: "red", opacity: "0.5" }), true);
     });
@@ -344,6 +368,14 @@ describe("definition.json $defs/attributes", () => {
 
     it("accepts marker-end with local url(#id)", () => {
       assert.equal(validate({ "marker-end": "url(#arrow)" }), true);
+    });
+
+    it("accepts marker-mid with local url(#id)", () => {
+      assert.equal(validate({ "marker-mid": "url(#arrow)" }), true);
+    });
+
+    it("accepts marker-start with local url(#id)", () => {
+      assert.equal(validate({ "marker-start": "url(#arrow)" }), true);
     });
 
     it("rejects marker-end with external url()", () => {
