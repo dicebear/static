@@ -1,6 +1,6 @@
-# DiceBear Static
+# DiceBear Assets
 
-Static assets for [DiceBear](https://www.dicebear.com).
+Brand assets for [DiceBear](https://www.dicebear.com).
 
 ## Contents
 
