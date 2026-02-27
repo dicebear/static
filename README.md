@@ -1,4 +1,4 @@
-# DiceBear Assets
+# DiceBear Brand
 
 Brand assets for [DiceBear](https://www.dicebear.com).
 
